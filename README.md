@@ -1,0 +1,1 @@
+Hive: simple object serialization.
