@@ -19,6 +19,6 @@ class DjangoModelSerializer(BaseSerializer):
         initial_repr = {}
 
         for field in obj._meta.fields:
-            initial_repr[field.name] = getattr(field, field.name)
+            initial_repr[field.name] = getattr(obj, field.name)
 
         return super(DjangoModelSerializer, self).serialize(obj, modifiers, initial_repr, *args, **kwargs)
