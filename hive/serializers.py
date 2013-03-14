@@ -1,30 +1,24 @@
-from .modifiers import mod_exclude_callables, mod_public_fields, mod_all_fields
+from .utils import get_notnull
+from .modifiers import public_fields, exclude_callables, generic_list
+
 
 class SerializerType(type):
-
     def __new__(cls, name, parents, dct):
-        def get_and_del(key):
-            tmp = dct.get(key, None)
-            if key in dct:
-                del dct[key]
-            return tmp
-
-        add_to, serializer_for = get_and_del('add_to'), get_and_del('serializer_for')
-        instance = super(SerializerType, cls).__new__(cls, name, parents, dct)
+        add_to = dct.pop('add_to', None)
+        serializer_for = dct.pop('serializer_for', None)
+        class_intance = super(SerializerType, cls).__new__(cls, name, parents, dct)
         if add_to is not None and serializer_for is not None:
-            add_to.add_serializer(instance, serializer_for)
+            add_to.add_serializer(class_intance, serializer_for)
 
-        default_serializers = get_and_del('default_serializers')
-        if default_serializers is not None:
-            setattr(instance, 'default_serializers', default_serializers)
+        default_serializers = dct.pop('default_modifiers', [])
+        setattr(class_intance, 'default_modifiers', default_serializers)
 
-        return instance
-
+        return class_intance
 
 
 class BaseSerializer(object):
     """
-    A serializer is a object with a serialize method
+    A serializer is a object with a `serialize` method
     that takes an arbitrary object and converts it to a
     known representation suitable for serialization purposes.
     A known representation is almost always a combination of
@@ -37,13 +31,10 @@ class BaseSerializer(object):
     """
     __metaclass__ = SerializerType
 
-    def __init__(self, custom_serializers=None, *args, **kwargs):
-        if custom_serializers is not None:
-            
+    def __init__(self, custom_modifiers=None, *args, **kwargs):
+        self.custom_modifiers = get_notnull(custom_modifiers, [])
 
-
-
-    def apply_modifiers(self, obj, modifiers, initial_repr=None, *args, **kwargs):
+    def apply_modifiers(self, obj, modifiers, initial_repr, *args, **kwargs):
         """
         This function applies a list of modifiers to an object returning the appropriate
         representation of that object.
@@ -54,28 +45,50 @@ class BaseSerializer(object):
         - *args, **kwargs: for future development
         """
         if not modifiers:
-            return object
+            return initial_repr
 
         current_repr = initial_repr
 
         for mod_function in modifiers:
-            current_repr = mod_function(obj, current_repr)
+            current_repr = mod_function(obj, current_repr, *args, **kwargs)
 
         return current_repr
 
-    def serialize(self, obj, modifiers=None, *args, **kwargs):
-        raise NotImplementedError('to be implemented in subclasses')
+    def serialize(self, obj, modifiers=None, initial_repr=None, *args, **kwargs):
+        if initial_repr is None:
+            raise ValueError('initial_repr should not be None')
+
+        final_modifiers = []
+        if modifiers is None:
+            modifiers = []
+
+        if kwargs.pop('use_default_modifiers', True):
+            final_modifiers.extend(self.default_modifiers)
+
+        final_modifiers.extend(self.custom_modifiers)
+        final_modifiers.extend(modifiers)
+
+        return self.apply_modifiers(obj, final_modifiers, initial_repr, *args, **kwargs)
 
 
 class GenericObjectSerializer(BaseSerializer):
-    def __init__(self, custom_serializers=None, *args, **kwargs):
-        self.default_modifiers = [mod_all_fields, mod_public_fields, mod_exclude_callables]
-        if custom_serializers is None:
-            custom_serializers = []
-
-        self.custom_serializers = custom_serializers
+    default_modifiers = [public_fields, exclude_callables]
 
     def serialize(self, obj, modifiers=None, *args, **kwargs):
-        if modifiers is None:
-            modifiers = []
-        return self.apply_modifiers(obj, self.default_modifiers + self.custom_serializers + modifiers, *args, **kwargs)
+        initial_repr = vars(obj)
+        return super(GenericObjectSerializer, self).serialize(obj, modifiers, initial_repr, *args, **kwargs)
+
+
+class ListSerializer(BaseSerializer):
+    default_modifiers = [generic_list]
+
+    def __init__(self, custom_modifiers=None, *args, **kwargs):
+        self.item_serializer = kwargs.pop('item_serializer', None)
+        if self.item_serializer is None:
+            raise ValueError('can\'t serialize a list without `item_serializer`')
+
+        super(ListSerializer, self).__init__(custom_modifiers, *args, **kwargs)
+
+    def serialize(self, obj, modifiers=None, *args, **kwargs):
+        initial_repr = obj
+        super(ListSerializer, self).serialize(obj, modifiers, initial_repr, *args, item_serializer=self.item_serializer, **kwargs)
