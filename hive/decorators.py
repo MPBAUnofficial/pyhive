@@ -1,9 +1,26 @@
-def serializable(serializer):
+def serializable(serializer,
+                 serializer_name='serializer',
+                 serialize_method_name='serialize'):
+    """
+    Decorator that attaches an instance of a serializer to a class
+    and also provides a serialize() method that serializes the instance
+    upon wich it is called.
+    >>> @serialize(GenericObjectSerializer(), serializer_name='serializer', serialize_method_name='serialize')
+    >>> class A(object):
+    >>>    def __init__(self):
+    >>>       self.a = 11
+    >>>       self.b = 22
+    >>> A().serialize()
+    {'a':11, 'b': 22}
+    """
+
     def inner(cls):
-        def hive_serialize(self, modifiers=None, *args, **kwargs):
+        def serialize(self, modifiers=None, *args, **kwargs):
             return self.hive_serializer.serialize(self, modifiers, *args, **kwargs)
 
-        setattr(cls, 'hive_serializer', serializer)
-        setattr(cls, 'hive_serialize', hive_serialize)
+        serialize.__name__ = serialize_method_name
+
+        setattr(cls, serializer_name, serializer)
+        setattr(cls, serialize_method_name, serialize)
         return cls
     return inner
