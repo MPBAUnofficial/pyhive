@@ -16,7 +16,8 @@ def serializable(serializer,
 
     def inner(cls):
         def serialize(self, modifiers=None, *args, **kwargs):
-            return self.hive_serializer.serialize(self, modifiers, *args, **kwargs)
+            serializer_object = getattr(self, serializer_name)
+            return getattr(serializer_object, serialize_method_name)(self, modifiers, *args, **kwargs)
 
         serialize.__name__ = serialize_method_name
 
