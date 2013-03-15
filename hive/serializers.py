@@ -23,11 +23,6 @@ class BaseSerializer(object):
     known representation suitable for serialization purposes.
     A known representation is almost always a combination of
     the python builtin types.
-    Optionally the serialize method can take a modifiers list.
-    A `modifier` is a python function that takes 4 arguments:
-    - object: the object to be serialized
-    - current: the current state of the serialization after applying the previous modifiers the .
-    - *args, **kwargs: for future development
     """
     __metaclass__ = SerializerType
 
@@ -47,14 +42,34 @@ class BaseSerializer(object):
         - modifiers: the list of modifiers to apply.
         - initial_repr: Is the initial state to wich the modifiers should be applied to.
         - *args, **kwargs: for future development
+
+        A modifier can be either a function, a list or a dict.
+        If the current representation of the object is a list and a list modifier is given, the current list
+        will be extended with all the elements of the modifier list.
+        Likewise if the current representation is a dict and a dict modifier is given, the current dict will
+        be extended with all the key-value mappings in the modifier dict.
+        Otherwise the function modifier will be used.
+        A `modifier` is a python function that takes 4 arguments:
+        - object: the object to be serialized
+        - current: the current state of the serialization after applying the previous modifiers the .
+        - *args, **kwargs: for future development
+        What it returns is an updated representation of the current object that will be replaced to
+        the current representation.
+        Therefore the next modifier will be called with a representation of the object that is the one returned by the
+        previoud modifier.
         """
         if not modifiers:
             return initial_repr
 
         current_repr = initial_repr
 
-        for mod_function in modifiers:
-            current_repr = mod_function(obj, current_repr, *args, **kwargs)
+        for modifier in modifiers:
+            if issubclass(type(modifier), dict) and issubclass(type(current_repr), dict):
+                current_repr.update(modifier)
+            if issubclass(type(modifier), list) and issubclass(type(current_repr), list):
+                current_repr.extend(modifier)
+            else:
+                current_repr = modifier(obj, current_repr, *args, **kwargs)
 
         return current_repr
 
