@@ -66,7 +66,7 @@ class BaseSerializer(object):
         for modifier in modifiers:
             if issubclass(type(modifier), dict) and issubclass(type(current_repr), dict):
                 current_repr.update(modifier)
-            if issubclass(type(modifier), list) and issubclass(type(current_repr), list):
+            elif issubclass(type(modifier), list) and issubclass(type(current_repr), list):
                 current_repr.extend(modifier)
             else:
                 current_repr = modifier(obj, current_repr, *args, **kwargs)
