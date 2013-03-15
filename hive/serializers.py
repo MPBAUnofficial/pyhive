@@ -34,6 +34,10 @@ class BaseSerializer(object):
     def __init__(self, custom_modifiers=None, *args, **kwargs):
         self.custom_modifiers = get_notnull(custom_modifiers, [])
 
+    def add_custom_modifier(self, modifier):
+        if modifier is not None:
+            self.custom_modifiers.append(modifier)
+
     def apply_modifiers(self, obj, modifiers, initial_repr, *args, **kwargs):
         """
         This function applies a list of modifiers to an object returning the appropriate
