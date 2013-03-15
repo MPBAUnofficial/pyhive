@@ -16,8 +16,7 @@ def serializable(serializer,
 
     def inner(cls):
         def serialize(self, modifiers=None, *args, **kwargs):
-            serializer_object = getattr(self, serializer_name)
-            return getattr(serializer_object, serialize_method_name)(self, modifiers, *args, **kwargs)
+            return getattr(self, serializer_name).serialize(self, modifiers, *args, **kwargs)
 
         serialize.__name__ = serialize_method_name
 
