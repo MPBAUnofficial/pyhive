@@ -1,15 +1,6 @@
-from django.db.models import ForeignKey, OneToOneField
-
+from .modifiers import foreign_key_id
 from ...serializers import BaseSerializer
 from ...modifiers import datetime_isoformat
-
-
-def foreign_key_id(obj, current, *args, **kwargs):
-    for field in obj._meta.fields:
-        if isinstance(field, (ForeignKey, OneToOneField)):
-            if field.name in current:
-                current[field.name] = current[field.name].pk
-    return current
 
 
 class DjangoModelSerializer(BaseSerializer):
