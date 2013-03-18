@@ -1,1 +1,1 @@
-from . import django
+from hive.extra.django import serializers

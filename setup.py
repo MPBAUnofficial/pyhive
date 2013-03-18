@@ -14,6 +14,6 @@ setup(
         'License :: OSI Approved :: GPL License',
         'Operating System :: OS Indipendent',
         'Framework :: Django',
-    ]
+    ],
 )
 
