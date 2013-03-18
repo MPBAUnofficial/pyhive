@@ -5,7 +5,11 @@ def foreign_key_id(obj, current, *args, **kwargs):
     for field in obj._meta.fields:
         if isinstance(field, (ForeignKey, OneToOneField)):
             if field.name in current:
-                current[field.name] = current[field.name].pk
+                field = current[field.name]
+                if field is not None and hasattr(field, 'pk'):
+                    current[field.name] = field.pk
+                else:
+                    current[field.name] = None
     return current
 
 
