@@ -8,7 +8,7 @@ setup(
     url="https://github.com/MPBAUnofficial/hive",
     author="Roberto Bampi",
     author_email="robampi@fbk.eu",
-    packages=["hive", "hive.extra.django"],
+    packages=["hive", "hive.extra", "hive.extra.django"],
     classifiers=[
         'Programming Language :: Python',
         'License :: OSI Approved :: GPL License',
