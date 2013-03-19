@@ -5,7 +5,7 @@ setup(
     name="hive",
     version=hive.__version__,
     description=open("README.md", 'r').read(),
-    url="https://github.com/gigaroby/hive",
+    url="https://github.com/MPBAUnofficial/hive",
     author="Roberto Bampi",
     author_email="robampi@fbk.eu",
     packages=["hive"],
@@ -13,7 +13,7 @@ setup(
         'Programming Language :: Python',
         'License :: OSI Approved :: GPL License',
         'Operating System :: OS Indipendent',
-        'Framework :: Django',
     ],
+    extra_requires=["django>=1.4"],
 )
 
