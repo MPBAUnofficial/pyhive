@@ -1,3 +1,5 @@
+
+
 def serializable(serializer,
                  serializer_name='serializer',
                  serialize_method_name='serialize'):
@@ -5,6 +7,7 @@ def serializable(serializer,
     Decorator that attaches an instance of a serializer to a class
     and also provides a serialize() method that serializes the instance
     upon wich it is called.
+    >>> from hive.serializers import serializable
     >>> @serialize(GenericObjectSerializer(), serializer_name='serializer', serialize_method_name='serialize')
     >>> class A(object):
     >>>    def __init__(self):
