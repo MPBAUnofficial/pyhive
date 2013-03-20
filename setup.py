@@ -1,19 +1,18 @@
 from setuptools import setup
-import hive
+import pyhive
 
 setup(
-    name="hive",
-    version=hive.__version__,
+    name="pyhive",
+    version=pyhive.__version__,
     description=open("README.md", 'r').read(),
-    url="https://github.com/gigaroby/hive",
+    url="https://github.com/MPBAUnofficial/hive",
     author="Roberto Bampi",
     author_email="robampi@fbk.eu",
-    packages=["hive"],
+    packages=["pyhive", "pyhive.extra", "pyhive.extra.django"],
     classifiers=[
         'Programming Language :: Python',
         'License :: OSI Approved :: GPL License',
         'Operating System :: OS Indipendent',
-        'Framework :: Django',
     ],
 )
 
