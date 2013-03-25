@@ -5,7 +5,7 @@ setup(
     name="pyhive",
     version=pyhive.__version__,
     description=open("README.md", 'r').read(),
-    url="https://github.com/MPBAUnofficial/hive",
+    url="https://github.com/MPBAUnofficial/pyhive",
     author="Roberto Bampi",
     author_email="robampi@fbk.eu",
     packages=["pyhive", "pyhive.extra", "pyhive.extra.django"],
