@@ -110,4 +110,4 @@ class ListSerializer(BaseSerializer):
 
     def serialize(self, obj, modifiers=None, *args, **kwargs):
         initial_repr = obj
-        super(ListSerializer, self).serialize(obj, modifiers, initial_repr, *args, item_serializer=self.item_serializer, **kwargs)
+        return super(ListSerializer, self).serialize(obj, modifiers, initial_repr, *args, item_serializer=self.item_serializer, **kwargs)
