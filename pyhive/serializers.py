@@ -101,8 +101,8 @@ class GenericObjectSerializer(BaseSerializer):
 class ListSerializer(BaseSerializer):
     default_modifiers = [generic_list]
 
-    def __init__(self, custom_modifiers=None, *args, **kwargs):
-        self.item_serializer = kwargs.pop('item_serializer', None)
+    def __init__(self, item_serializer, custom_modifiers=None, *args, **kwargs):
+        self.item_serializer = item_serializer
         if self.item_serializer is None:
             raise ValueError('can\'t serialize a list without `item_serializer`')
 
