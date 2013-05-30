@@ -1,8 +1,7 @@
 # pyHive: Simple yet powerful obpject serialization #
 
 ## Introduction: ##
-Hive can convert just about anything into basic python data structures
-that can later be converted into the format required (json, xml, ...).
+Hive can convert just about anything into basic python data structures that can later be converted into the format required (json, xml, ...).
 
 ## Basic usage (for plain old objects): ##
 ```python
@@ -17,7 +16,7 @@ that can later be converted into the format required (json, xml, ...).
 ```
 
 
-## List serialization: ##///
+## List serialization: ##
 A list serializer works by applying a serializer instance to convert every single element of the list provided.
 The item_serializer parameter is the instance to be used to serialize single elements of the list (it is required).
 
