@@ -1,4 +1,4 @@
-# pyHive: Simple yet powerful obpject serialization #
+# pyHive: Simple yet powerful objects serialization #
 
 ## Introduction: ##
 Hive can convert just about anything into basic python data structures that can later be converted into the format required (json, xml, ...).
