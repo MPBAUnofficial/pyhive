@@ -12,7 +12,7 @@ setup(
     classifiers=[
         'Programming Language :: Python',
         'License :: OSI Approved :: GPL License',
-        'Operating System :: OS Indipendent',
+        'Operating System :: OS Independent',
     ],
 )
 
